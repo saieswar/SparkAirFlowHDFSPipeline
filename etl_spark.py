@@ -24,16 +24,8 @@ def download_data():
     data = requests.get(final_url, params={'User-agent': f'your bot '})
     finance_complaint_data = list(map(lambda x: x["_source"], filter(lambda y : "_source" in y.keys(),     json.loads(data.content))))
     return finance_complaint_data
-
-warehouse_location="database"
-spark = SparkSession \
-        .builder \
-        .appName("ComplaintsAnalytics") \
-        .config("spark.sql.warehouse.dir", warehouse_location) \
-        .enableHiveSupport() \
-        .getOrCreate()
-
 table_name = "finance_complaint"
+
 def get_data_frame():
     
     data = download_data()
@@ -82,4 +74,13 @@ spark.sql("""
  select count(*) from res;
 """).show()
 
- 
+if __name__ == "__main__":
+    warehouse_location="database"
+    spark = SparkSession \
+            .builder \
+            .appName("ComplaintsAnalytics") \
+            .config("spark.sql.warehouse.dir", warehouse_location) \
+            .enableHiveSupport() \
+            .getOrCreate()
+    
+    download_data()
