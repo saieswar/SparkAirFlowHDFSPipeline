@@ -2,6 +2,18 @@ import json
 import requests
 import datetime
 import os
+from pyspark.sql import SparkSession
+from pyspark.sql.types import StructType,StructField, StringType, IntegerType
+import pandas
+import matplotlib
+   
+warehouse_location="database"
+spark = SparkSession \
+        .builder \
+        .appName("ComplaintsAnalytics") \
+        .config("spark.sql.warehouse.dir", warehouse_location) \
+        .enableHiveSupport() \
+        .getOrCreate()
 
 def get_from_date_end_date():
     from_date = "2023-01-01"
@@ -75,12 +87,6 @@ spark.sql("""
 """).show()
 
 if __name__ == "__main__":
-    warehouse_location="database"
-    spark = SparkSession \
-            .builder \
-            .appName("ComplaintsAnalytics") \
-            .config("spark.sql.warehouse.dir", warehouse_location) \
-            .enableHiveSupport() \
-            .getOrCreate()
+
     
     download_data()
